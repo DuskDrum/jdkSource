@@ -2,9 +2,10 @@
 **主要阅读如下的类**：
 * 集合
     * [ ] ArrayList
-    * [x] hashMap
+    * [x] HashMap
     * [ ] LinkedList
     * [ ] LinkedHashMap
+    * [ ] LinkedHashSet
     * [ ] HashTable
     * [ ] TreeMap
     * [ ] ConcurrentHashMap
@@ -20,6 +21,12 @@
     * [ ] ScheduledThreadPool
     * [ ] Thread
     * [ ] ThreadPool
+
+* 函数式接口
+    * [x] Consumer
+    * [x] Function
+    * [x] Predicate
+    * [x] Supplier   
     
 * NIO
     * [ ] AsynchronousFileChannel

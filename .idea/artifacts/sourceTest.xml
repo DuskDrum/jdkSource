@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sourceTest">
+    <output-path>$PROJECT_DIR$/out/artifacts/sourceTest</output-path>
+    <root id="archive" name="sourceTest.jar">
+      <element id="module-output" name="jdkSource" />
+      <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.56" />
+      <element id="library" level="project" name="Maven: junit:junit:4.12" />
+      <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.3" />
+      <element id="library" level="project" name="Maven: com.carrotsearch:hppc:0.5.4" />
+      <element id="library" level="project" name="Maven: net.openhft:koloboke-api-jdk8:0.6.5" />
+      <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:2.0.3" />
+      <element id="library" level="project" name="Maven: net.openhft:koloboke-impl-jdk8:0.6.5" />
+      <element id="library" level="project" name="Maven: org.ehcache:sizeof:0.3.0" />
+      <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.5" />
+    </root>
+  </artifact>
+</component>
