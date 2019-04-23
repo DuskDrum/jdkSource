@@ -27,7 +27,10 @@
     * [x] Function
     * [x] Predicate
     * [x] Supplier   
-    
+    * [x] BiFunction
+    * [x] BiPredicate
+    * [x] BiConsumer
+
 * NIO
     * [ ] AsynchronousFileChannel
     * [ ] Buffer

@@ -154,6 +154,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      *      对比HashTable，HashTable对key直接hashCode（），若key为null时，会抛出异常，所以HashTable的key不可为null
      *  b. 当key ≠ null时，则通过先计算出 key的 hashCode()（记为h），然后 对哈希码进行 扰动处理： 按位 异或（^） 哈希码自身右移16位后的二进制
      *
+     *
+     *  >>> 无符号右移运算只针对负数计算，因为对于正数来说这种运算相当于 >>右移运算符
      */
     static final int hash(Object key) {
         int h;
@@ -960,11 +962,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     // JDK8重写的方法
 
     /**
-     * 通过key映射到对应node，如果没映射到则返回默认值defaultValue
+     * 通过key映射到对应的键值对，如果没映射到则返回默认值defaultValue
      *
-     * @param key
-     * @param defaultValue
-     * @return key映射到对应的node，如果没映射到则返回默认值defaultValue
      */
     @Override
     public V getOrDefault(Object key, V defaultValue) {
@@ -973,11 +972,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * 在hashMap中插入参数key和value组成的键值对，如果key在hashMap中已经存在，不替换value
-     *
-     * @param key
-     * @param value
-     * @return 如果key在hashMap中不存在，返回旧value
+     * 1.查询key对应的value值，key-value为空才会继续
+     * 2.不论传入的value是否为空，都会建立映射（hashMap的key和value都可以为null）
      */
     @Override
     public V putIfAbsent(K key, V value) {
@@ -985,11 +981,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * 删除hashMap中key为参数key，value为参数value的键值对。如果桶中结构为树，则级联删除
-     *
-     * @param key
-     * @param value
-     * @return 删除成功，返回true
+     * 删除hashMap中key为参数key，value为参数value的键值对。
+     * 删除成功，返回true
      */
     @Override
     public boolean remove(Object key, Object value) {
@@ -1016,9 +1009,6 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     /**
      * 使用参数value替换key映射到的键值对中的value
      *
-     * @param key
-     * @param value
-     * @return 替换成功，返回true
      */
     @Override
     public V replace(K key, V value) {
@@ -1032,6 +1022,18 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return null;
     }
 
+    /**
+     * 1. 查询key没有对应的value，key-value不存在才会继续执行
+     * 2. 运算的lambda表达式返回是空时，不作任何操作，返回null
+     * 3. 运算的lambda表达式返回不为空，新建key-value映射
+     * 4. 调用的lambda是Function类型，有入参，有出参(刚好对应key和value的类型)
+     *
+     * 总结：
+     * 只有当key对应的节点【不存在】或者对应的value值【为null】才进行处理，其它逻辑和compute方法一致。
+     * 另外，由于key值不存在，自然没有oldValue参数，获取value值的方法只有key这一个参数。
+     * 如果lambda计算出来的value是null，不处理,返回null。
+     *
+     */
     @Override
     public V computeIfAbsent(K key,
                              Function<? super K, ? extends V> mappingFunction) {
@@ -1044,6 +1046,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         int binCount = 0;
         TreeNode<K, V> t = null;
         Node<K, V> old = null;
+        //判断进行扩容
         if (size > threshold || (tab = table) == null ||
                 (n = tab.length) == 0)
             n = (tab = resize()).length;
@@ -1063,22 +1066,28 @@ public class HashMap<K, V> extends AbstractMap<K, V>
                 } while ((e = e.next) != null);
             }
             V oldValue;
+            // 如果key存在旧值，直接返回
             if (old != null && (oldValue = old.value) != null) {
                 afterNodeAccess(old);
                 return oldValue;
             }
         }
+        // Function的apply方法，返回lambda的出参
         V v = mappingFunction.apply(key);
+        // lambda返回值是null，直接返回null
         if (v == null) {
             return null;
         } else if (old != null) {
             old.value = v;
             afterNodeAccess(old);
             return v;
+        // HashMap为红黑树
         } else if (t != null)
             t.putTreeVal(this, tab, hash, key, v);
         else {
+            // hashMap为链表
             tab[i] = newNode(hash, key, v, first);
+            // 判断是否树化
             if (binCount >= TREEIFY_THRESHOLD - 1)
                 treeifyBin(tab, hash);
         }
@@ -1088,26 +1097,55 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return v;
     }
 
+    /**
+     *
+     * 1. 查询key没有对应的value，key-value【存在】才会继续执行，这里是存在，和computeIfAbsent刚好相反
+     * 2. 运算的lambda表达式返回是空时，直接调用removeNode
+     * 3. 运算的lambda表达式返回不为空，新建key-value映射
+     * 4. 调用的lambda是BiFunction类型，两个入参，一个出参(前两个为入参(K-V),后一个为出参(V))
+     *
+     *
+     * 总结：
+     *  只有当key值对应的节点【存在】或者对应的value【为null】时进行处理，其它逻辑和compute方法一致。
+     *  如果lambda计算出来的value是null，清除这个节点。
+     */
     public V computeIfPresent(K key,
                               BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        // 这种手动抛出 NullPointerException 的做法比较不常见，查了下有几个好处(正常业务代码还是不要手动抛空指针吧=w=)
+        // 详见https://stackoverflow.com/questions/43928556/why-explicitly-throw-a-nullpointerexception-rather-than-letting-it-happen-natura
+        //1.快速失败：如果它失败了，最好早点而不是晚点失败。这样可以使问题更接近其来源，从而更容易识别和恢复。它还可以避免在必然会失败的代码上浪费CPU周期。
+        //2.意图：明确地抛出异常使维护者清楚地知道错误是故意的，并且作者意识到了后果。
+        //3.一致性：如果允许错误自然发生，则可能不会在每个方案中发生。例如，如果没有找到映射，则remappingFunction永远不会使用，并且不会抛出异常。事先验证输入更清晰。
+        //4.稳定性：代码随着时间的推移而发展，在经过一些重构后，遇到异常的代码可能会不可预料。明确抛出异常可以使行为不会无意中发生变化。
         if (remappingFunction == null)
             throw new NullPointerException();
         Node<K, V> e;
         V oldValue;
         int hash = hash(key);
         if ((e = getNode(hash, key)) != null &&
+                // 限制oldValue不能为空
                 (oldValue = e.value) != null) {
+            // 入参为key+原来的value
+            // 出参为新value
             V v = remappingFunction.apply(key, oldValue);
             if (v != null) {
                 e.value = v;
                 afterNodeAccess(e);
                 return v;
             } else
+                // 这里，如果lambda返回的value是null,直接调用remove方法清除节点(TODO: 不知道这样做的深意是什么)
                 removeNode(hash, key, null, false, true);
         }
         return null;
     }
 
+    /**
+     * compute方法其实和put方法类似，都是插入或覆盖节点，
+     * 不同的是HashMap#put的value值是固定的，
+     * 而compute方法的value根据key值和oldValue，使用lambda计算而来。
+     * 且如果计算出来的value是null，清除节点。
+     *
+     */
     @Override
     public V compute(K key,
                      BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
@@ -1120,6 +1158,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         int binCount = 0;
         TreeNode<K, V> t = null;
         Node<K, V> old = null;
+        // 判断进行扩容
         if (size > threshold || (tab = table) == null ||
                 (n = tab.length) == 0)
             n = (tab = resize()).length;
@@ -1130,6 +1169,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
                 Node<K, V> e = first;
                 K k;
                 do {
+                    // 遍历取值
                     if (e.hash == hash &&
                             ((k = e.key) == key || (key != null && key.equals(k)))) {
                         old = e;
@@ -1139,19 +1179,25 @@ public class HashMap<K, V> extends AbstractMap<K, V>
                 } while ((e = e.next) != null);
             }
         }
+        // 旧值可以为空
         V oldValue = (old == null) ? null : old.value;
         V v = remappingFunction.apply(key, oldValue);
         if (old != null) {
+            // 旧值新值都不为空，赋值
             if (v != null) {
                 old.value = v;
                 afterNodeAccess(old);
             } else
+                //旧值不为空，新值为空，直接清除节点
                 removeNode(hash, key, null, false, true);
         } else if (v != null) {
+            //旧值是空，新值不为空，hashMap为红黑树
             if (t != null)
                 t.putTreeVal(this, tab, hash, key, v);
             else {
+                // 旧值是空，新值不为空，hashMap为链表
                 tab[i] = newNode(hash, key, v, first);
+                // 判断是否转化为树
                 if (binCount >= TREEIFY_THRESHOLD - 1)
                     treeifyBin(tab, hash);
             }
@@ -1162,6 +1208,15 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return v;
     }
 
+    /**
+     * 和 compute方法类似，根据key值找节点，找到则覆盖，找不到则插入。
+     * 只不过参数BiFunction的方法apply的参数不同：
+     *      compute以key参数和oldValue 作为参数，
+     *      merge则以value参数和oldValue为参数，
+     * 如果oldValue为null或者节点不存在，则直接取value参数作为节点的value值。
+     * 同样的，如果lambda计算出来的value值为null，删除这个节点。
+     *
+     */
     @Override
     public V merge(K key, V value,
                    BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
@@ -1225,6 +1280,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * ConcurrentModificationException， fast-fail机制
+     * 只是迭代而已
      */
     @Override
     public void forEach(BiConsumer<? super K, ? super V> action) {
@@ -1244,6 +1300,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * ConcurrentModificationException，fast-fail机制
+     *
+     * 用每个节点的key值和value值作为BiFunctio的apply方法的参数，并将方法返回值作为新的value值对节点进行覆盖
      */
     @Override
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
@@ -1266,11 +1324,9 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     // 克隆和序列化
 
     /**
-     * 浅拷贝。
-     * clone方法虽然生成了新的HashMap对象，新的HashMap中的table数组虽然也是新生成的，但是数组中的元素还是引用以前的HashMap中的元素。
-     * 这就导致在对HashMap中的元素进行修改的时候，即对数组中元素进行修改，会导致原对象和clone对象都发生改变，但进行新增或删除就不会影响对方，因为这相当于是对数组做出的改变，clone对象新生成了一个数组。
+     * 浅拷贝。只新增了一个引用，内存地址还是用的之前hashMap
+     * 会导致克隆后的hashMap修改后，影响之前的hashMap
      *
-     * @return hashMap的浅拷贝
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -1287,7 +1343,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return result;
     }
 
-    // These methods are also used when serializing HashSets
+    // HashSet序列化时也会调用这个方法
     final float loadFactor() {
         return loadFactor;
     }
@@ -1302,12 +1358,6 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * 序列化hashMap到ObjectOutputStream中
      * 将hashMap的总容量capacity、实际容量size、键值对映射写入到ObjectOutputStream中。键值对映射序列化时是无序的。
      *
-     * @serialData The <i>capacity</i> of the java.util.HashMapNote (the length of the
-     * bucket array) is emitted (int), followed by the
-     * <i>size</i> (an int, the number of key-value
-     * mappings), followed by the key (Object) and value (Object)
-     * for each key-value mapping.  The key-value mappings are
-     * emitted in no particular order.
      */
     private void writeObject(java.io.ObjectOutputStream s)
             throws IOException {
@@ -1379,9 +1429,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
-    /* ------------------------------------------------------------ */
-    // iterators
-
+    // 迭代器
     abstract class HashIterator {
         Node<K, V> next;        // next entry to return
         Node<K, V> current;     // current entry

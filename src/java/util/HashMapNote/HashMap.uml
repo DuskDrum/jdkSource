@@ -3,51 +3,51 @@
   <ID>JAVA</ID>
   <OriginalElement>java.util.HashMap</OriginalElement>
   <nodes>
-    <node x="133.0" y="850.5">java.lang.Cloneable</node>
-    <node x="258.0" y="655.0">java.util.AbstractMap</node>
-    <node x="271.5" y="0.0">java.util.Map</node>
-    <node x="70.5" y="1126.0">java.util.HashMap</node>
-    <node x="0.0" y="850.5">java.io.Serializable</node>
+    <node x="0.0" y="80.0">java.util.AbstractMap</node>
+    <node x="309.0" y="91.5">java.lang.Cloneable</node>
+    <node x="81.08333333333331" y="0.0">java.util.Map</node>
+    <node x="46.79166666666666" y="183.0">java.util.HashMap</node>
+    <node x="176.0" y="91.5">java.io.Serializable</node>
   </nodes>
   <notes />
   <edges>
     <edge source="java.util.HashMap" target="java.io.Serializable">
-      <point x="-173.25" y="-555.5" />
-      <point x="128.25" y="1101.0" />
-      <point x="56.5" y="1101.0" />
+      <point x="39.375" y="-61.0" />
+      <point x="243.66666666666666" y="158.0" />
+      <point x="232.5" y="158.0" />
       <point x="0.0" y="15.0" />
     </edge>
     <edge source="java.util.HashMap" target="java.util.Map">
-      <point x="173.25" y="-555.5" />
-      <point x="474.75" y="1101.0" />
-      <point x="587.5" y="1101.0" />
-      <point x="587.5" y="630.0" />
-      <point x="618.0" y="630.0" />
-      <point x="115.5" y="302.5" />
+      <point x="-39.375" y="-61.0" />
+      <point x="165.5" y="55.0" />
+      <point x="136.58333333333331" y="55.0" />
+      <point x="18.5" y="15.0" />
     </edge>
     <edge source="java.util.HashMap" target="java.lang.Cloneable">
-      <point x="-57.75" y="-555.5" />
-      <point x="243.75" y="1101.0" />
-      <point x="185.5" y="1101.0" />
+      <point x="118.125" y="-61.0" />
+      <point x="322.41666666666663" y="158.0" />
+      <point x="361.5" y="158.0" />
       <point x="0.0" y="15.0" />
     </edge>
     <edge source="java.util.HashMap" target="java.util.AbstractMap">
-      <point x="57.75" y="-555.5" />
-      <point x="359.25" y="1101.0" />
-      <point x="417.5" y="1101.0" />
-      <point x="0.0" y="210.5" />
+      <point x="-118.125" y="-61.0" />
+      <point x="86.16666666666666" y="158.0" />
+      <point x="77.5" y="158.0" />
+      <point x="0.0" y="26.5" />
     </edge>
     <edge source="java.util.AbstractMap" target="java.util.Map">
-      <point x="0.0" y="-210.5" />
-      <point x="417.5" y="630.0" />
-      <point x="387.0" y="630.0" />
-      <point x="-115.5" y="302.5" />
+      <point x="0.0" y="-26.5" />
+      <point x="77.5" y="55.0" />
+      <point x="99.58333333333331" y="55.0" />
+      <point x="-18.5" y="15.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="198.0" y="116.0" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0854674346477624" x="487.6154128739949" y="380.74901016368017" />
+  <SelectedNodes>
+    <node>java.lang.Cloneable</node>
+  </SelectedNodes>
   <Categories>
-    <Category>Methods</Category>
+    <Category>Constructors</Category>
   </Categories>
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>
