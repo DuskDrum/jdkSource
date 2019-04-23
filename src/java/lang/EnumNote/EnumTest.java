@@ -6,8 +6,9 @@ package java.lang.EnumNote;
  */
 public class EnumTest {
 
-    class EnumSon extends Enum{
+//    class EnumSon extends Enum{
+        // 报错：java:类无法直接拓展java.lang.Enum
         // 这里发现，Enum类虽然是抽象类，但是不允许被继承：
         // 因为Enum类提供的构造方法是 protected 修饰的
-    }
+//    }
 }

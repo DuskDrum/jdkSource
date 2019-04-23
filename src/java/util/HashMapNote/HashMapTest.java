@@ -35,10 +35,28 @@ public class HashMapTest extends HashMap{
         // 循环8次扩容
         IntStream.range(0,8).forEach(i->{
             System.out.println("这是第.."+i);
-            ((HashMap<String, String>) param).resize();
+            ((HashMap<String, String>) param).resize(); //打破双亲委派的封印才能正常运行(挪到java.util包下面)
         });
         param.get("1");
 
+    }
+
+
+    /**
+     * 测试|与||的区别
+     */
+    @Test
+    public void test(){
+        //两个数都转为二进制，然后从高位开始比较，两个数只要有一个为1则为1，否则就为0
+        System.out.printf("测试位或运算符[%d]\n",12|8);
+        //当|用作判断时，前后代码都会执行，且任是有一个为true就是true
+        int i = 0;
+        if(true||i-1!=0) {
+            System.out.printf("测试||的区别 [%d]\n", i);
+            if(true | (i--)==0) {
+                System.out.printf("测试|的区别 [%d]\n", i);
+            }
+        }
     }
 
 

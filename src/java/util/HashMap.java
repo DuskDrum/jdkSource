@@ -211,8 +211,6 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
     }
 
-    /* ---------------- Fields -------------- */
-
     /**
      * 哈希桶数组，分配的时候，table的长度总是2的幂，就是桶数组
      */
@@ -281,8 +279,6 @@ public class HashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * 往hashMap中塞其他的Map
-     * @param m
-     * @param evict
      */
     final void putMapEntries(Map<? extends K, ? extends V> m, boolean evict) {
         // size()函数，值m的实际元素个数
@@ -408,18 +404,12 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * 3.3如果不是红黑树，那么就肯定是链表。遍历链表，如果找到了key映射的节点，就记录这个节点，退出循环。
      *    如果没有找到，在链表尾部插入节点。插入后，如果链的长度大于TREEIFY_THRESHOLD这个临界值，则使用treeifyBin方法把链表转为红黑树。
      * 4.如果找到了key映射的节点，且节点不为null
-     * 4.1记录节点的vlaue。
+     * 4.1记录节点的value。
      * 4.2如果参数onlyIfAbsent为false，或者oldValue为null，替换value，否则不替换。
      * 4.3返回记录下来的节点的value。
      * 5.如果没有找到key映射的节点（2、3步中讲了，这种情况会插入到hashMap中），插入节点后size会加1，
      *    这时要检查size是否大于临界值threshold，如果大于会使用resize方法进行扩容。
      *
-     * @param hash         指定参数key的哈希值
-     * @param key          指定参数key
-     * @param value        指定参数value
-     * @param onlyIfAbsent 如果为true，即使指定参数key在map中已经存在，也不会替换value
-     * @param evict        如果为false，数组table在创建模式中
-     * @return 如果value被替换，则返回旧的value，否则返回null。当然，可能key对应的value就是null。
      */
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                    boolean evict) {
@@ -499,7 +489,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      *
      * @return the table
      */
-    public final Node<K, V>[] resize() {
+    final Node<K, V>[] resize() {
         //新建oldTab数组保存扩容前的数组table
         Node<K, V>[] oldTab = table;
         //获取原来数组的长度
@@ -644,7 +634,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     /**
      * 删除hashMap中key映射的node
      * remove方法的实现可以分为三个步骤：
-     * 1.通过 hash(Object key)方法计算key的哈希值。
+     * 1.通过 hash(Object key)方法计算key的哈希值(得到数组中桶的位置)。
      * 2.通过 removeNode 方法实现功能。
      * 3.返回被删除的node的value。
      *
@@ -659,19 +649,12 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     /**
      * Map.remove和相关方法的实现需要的方法
      * removeNode方法的步骤总结为:
-     * 1.如果数组table为空或key映射到的桶为空，返回null。
-     * 2.如果key映射到的桶上第一个node的就是要删除的node，记录下来。
-     * 3.如果桶内不止一个node，且桶内的结构为红黑树，记录key映射到的node。
-     * 4.桶内的结构不为红黑树，那么桶内的结构就肯定为链表，遍历链表，找到key映射到的node，记录下来。
-     * 5.如果被记录下来的node不为null，删除node，size-1被删除。
-     * 6.返回被删除的node。
+     * 1.如果未映射到数组上的桶，返回null。
+     * 2.如果key映射到的桶上第一个node的就是要删除的node，直接进行删除(树删除/链表删除)
+     * 3.如果桶内不止一个node，且桶内的结构为红黑树，记录key映射到的node，进行删除。
+     * 4.桶内的结构不为红黑树，那么桶内的结构就肯定为链表，遍历链表，找到key映射到的node，进行删除。
+     * 5.返回被删除的node。
      *
-     * @param hash       key的哈希值
-     * @param key        key的哈希值
-     * @param value      如果 matchValue 为true，则value也作为确定被删除的node的条件之一，否则忽略
-     * @param matchValue 如果为true，则value也作为确定被删除的node的条件之一
-     * @param movable    如果为false，删除node时不会删除其他node
-     * @return 返回被删除的node，如果没有node被删除，则返回null（针对红黑树的删除方法）
      */
     final Node<K, V> removeNode(int hash, Object key, Object value,
                                 boolean matchValue, boolean movable) {
@@ -729,7 +712,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * 删除map中所有的键值对
+     * 删除map中所有的键值对,赋值为null
      */
     public void clear() {
         Node<K, V>[] tab;
@@ -742,16 +725,14 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * 如果hashMap中的键值对有一对或多对的value为参数value，返回true
+     * 如果hashMap中的键值对有一对或多对的value为参数value，返回true.因为TreeNode也有value属性,所以不用单独判断链表/红黑树
      *
-     * @param value 参数value
-     * @return 如果hashMap中的键值对有一对或多对的value为参数value，返回true
      */
     public boolean containsValue(Object value) {
         Node<K, V>[] tab;
         V v;
         if ((tab = table) != null && size > 0) {
-            //遍历数组table
+            //遍历数组的所有桶
             for (int i = 0; i < tab.length; ++i) {
                 //遍历桶中的node
                 for (Node<K, V> e = tab[i]; e != null; e = e.next) {
@@ -766,14 +747,17 @@ public class HashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * 返回hashMap中所有key的视图。
-     * 改变hashMap会影响到set，反之亦然。
-     * 如果当迭代器迭代set时，hashMap被修改(除非是迭代器自己的remove()方法)，迭代器的结果是不确定的。
-     * set支持元素的删除，通过Iterator.remove、Set.remove、removeAll、retainAll、clear操作删除hashMap中对应的键值对。
-     * 不支持add和addAll方法。
+     * 如果当迭代器迭代set时，hashMap被修改(除非是迭代器自己的remove()方法)，会违反fast-fail机制。
      *
-     * 这里的keySet是AbstractMap中的default类型，所以需要放到java.util包里
+     * 这里的keySet是AbstractMap中，用default修饰的变量，所以需要放到AbstractMap相同包中(java.util)才不会报错
+     * 注意，需要测试HashMap中default修饰的方法，比如说resize()，把测试类放到(java.util)包中是不行的，会报错：
+     *      Cannot instantiate test(s): java.lang.SecurityException: Prohibited package name: java.util
      *
-     * @return 返回hashMap中所有key的set视图
+     *      意思是jvm的类加载机制，不允许有程序员自定义的java.xxxx这种包出现(就是为了防止我们想要做的这个直接包内测试 = =)，
+     *      我没有解决这个问题，但是提供两种思路吧：
+     *      1. 破坏双亲委派模型。(这块网上有很多帖子，但是看的比较迷糊)
+     *      2. 重新拷一份HashMap的代码到自定义包(非java.开头)，把引用父类default变量的代码注掉，进行测试
+     *
      */
     public Set<K> keySet() {
         Set<K> ks = keySet;
@@ -810,10 +794,21 @@ public class HashMap<K, V> extends AbstractMap<K, V>
             return removeNode(hash(key), key, null, false, true) != null;
         }
 
+        /***
+         * Spliterator是一个可分割迭代器(splitable iterator)，可以和iterator顺序遍历迭代器一起看
+         * jdk1.8发布后，对于并行处理的能力大大增强，Spliterator就是为了并行遍历元素而设计的一个迭代器
+         * jdk1.8中的集合框架中的数据结构都默认实现了spliterator
+         */
         public final Spliterator<K> spliterator() {
             return new KeySpliterator<>(HashMap.this, 0, -1, 0, 0);
         }
 
+        /**
+         * 这是lambda表达式所用的。
+         * forEach用来遍历。
+         *
+         * 通过判断modCount和mc的大小，来触发fast-fail机制
+         */
         public final void forEach(Consumer<? super K> action) {
             Node<K, V>[] tab;
             if (action == null)
@@ -822,6 +817,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
                 int mc = modCount;
                 for (int i = 0; i < tab.length; ++i) {
                     for (Node<K, V> e = tab[i]; e != null; e = e.next)
+                        // accept方法，一个输入，没有输出
                         action.accept(e.key);
                 }
                 if (modCount != mc)
@@ -832,12 +828,10 @@ public class HashMap<K, V> extends AbstractMap<K, V>
 
     /**
      * 返回hashMap中所有value的collection视图
-     * 改变hashMap会改变collection，反之亦然。
-     * 如果当迭代器迭代collection时，hashMap被修改（除非是迭代器自己的remove()方法），迭代器的结果是不确定的。
-     * collection支持元素的删除，通过Iterator.remove、Collection.remove、removeAll、retainAll、clear操作删除hashMap中对应的键值对。
-     * 不支持add和addAll方法。
      *
-     * @return 返回hashMap中所有key的collection视图
+     * 如果当迭代器迭代collection时，hashMap被修改（除非是迭代器自己的remove()方法），会违反fast-fail机制。
+     *
+     * 这里的values是AbstractMap中，用default修饰的变量，所以需要放到AbstractMap相同包中(java.util)才不会报错
      */
     public Collection<V> values() {
         Collection<V> vs = values;
@@ -1005,10 +999,6 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     /**
      * 使用newValue替换key和oldValue映射到的键值对中的value
      *
-     * @param key
-     * @param oldValue
-     * @param newValue
-     * @return 替换成功，返回true
      */
     @Override
     public boolean replace(K key, V oldValue, V newValue) {
@@ -1467,16 +1457,22 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
-    /* ------------------------------------------------------------ */
-    // spliterators
-
+    /**
+     * 用来支持并行迭代
+     */
     static class HashMapSpliterator<K, V> {
+        // 需要遍历的 HashMap 对象
         final HashMap<K, V> map;
-        Node<K, V> current;          //记录当前的节点
-        int index;                  //当前节点的下标
-        int fence;                  //堆大小
-        int est;                    //估计大小
-        int expectedModCount;       // for comodification checks
+        // 当前正在遍历的节点
+        Node<K, V> current;
+        // 当前节点的数组(桶)下标
+        int index;
+        // 当前迭代器遍历上限的桶下标
+        int fence;
+        // 需要遍历的元素个数
+        int est;
+        // 期望操作数，在遍历时，用来支持fast-fail机制的
+        int expectedModCount;
 
         HashMapSpliterator(HashMap<K, V> m, int origin,
                            int fence, int est,
@@ -1488,7 +1484,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
             this.expectedModCount = expectedModCount;
         }
 
-        final int getFence() { // initialize fence and size on first use
+        // 第一次使用获取当前迭代器的最大迭代范围和元素个数
+        final int getFence() {
             int hi;
             if ((hi = fence) < 0) {
                 HashMap<K, V> m = map;
@@ -1499,13 +1496,16 @@ public class HashMap<K, V> extends AbstractMap<K, V>
             }
             return hi;
         }
-
+        // 返回元素个数
         public final long estimateSize() {
-            getFence(); // force init
+            getFence();
             return (long) est;
         }
     }
 
+    /**
+     * key的并行迭代
+     */
     static final class KeySpliterator<K, V>
             extends HashMapSpliterator<K, V>
             implements Spliterator<K> {
@@ -1514,15 +1514,21 @@ public class HashMap<K, V> extends AbstractMap<K, V>
             super(m, origin, fence, est, expectedModCount);
         }
 
+        // 对当前迭代器进行分割，
         public KeySpliterator<K, V> trySplit() {
+            // hi指的是元素个数，lo指当前下标数(这里：正数而言>>>和>>没区别，所以>>>1就是右移1，除以2的意思)
+            // (当前下标+元素个数)/2，得到的就是当前下标到最大下标之间的中间值。相当于把迭代器一分为2
+            // Stream在使用时会递归的调用此方法(把自己分成两个)，直到current为null,就返回null
             int hi = getFence(), lo = index, mid = (lo + hi) >>> 1;
             return (lo >= mid || current != null) ? null :
-                    new KeySpliterator<>(map, lo, index = mid, est >>>= 1,
-                            expectedModCount);
+                    // 这里est也除了2
+                    new KeySpliterator<>(map, lo, index = mid, est >>>= 1,expectedModCount);
         }
 
         /**
-         * ConcurrentModificationException，fast-fail机制
+         * ConcurrentModificationException，fast-fail机制（expectedModCount、modCount、mc）
+         *
+         * 在当前迭代器遍历范围遍历一遍
          */
         public void forEachRemaining(Consumer<? super K> action) {
             int i, hi, mc;
@@ -1554,6 +1560,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
 
         /**
          * ConcurrentModificationException，fast-fail机制
+         *
+         * 遍历 迭代器遍历范围内的元素，找到第一个非空元素时就停止遍历
          */
         public boolean tryAdvance(Consumer<? super K> action) {
             int hi;
@@ -1577,12 +1585,19 @@ public class HashMap<K, V> extends AbstractMap<K, V>
             return false;
         }
 
+        // 据说是用来生成特征码的
         public int characteristics() {
+            // ||和|的区别：详见HashMapTest
+            //      使用||时，前面为true时就不会执行后方代码。
+            //      使用|时，前面为true时仍然会执行后方代码。
+            // 这里的|不是用作判断的，是简单的位或运算符
+            // 两个数都转为二进制，然后从高位开始比较，两个数只要有一个为1则为1，否则就为0
             return (fence < 0 || est == map.size ? Spliterator.SIZED : 0) |
                     Spliterator.DISTINCT;
         }
     }
 
+    // 和 KeySpliterator源码一样，值Spliterator
     static final class ValueSpliterator<K, V>
             extends HashMapSpliterator<K, V>
             implements Spliterator<V> {
@@ -1659,6 +1674,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
+    // 跟KeySpliterator源码一样。桶Spliterator
     static final class EntrySpliterator<K, V>
             extends HashMapSpliterator<K, V>
             implements Spliterator<Map.Entry<K, V>> {
@@ -1740,14 +1756,12 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     // LinkedHashMap support
 
 
-    /*
-     * The following package-protected methods are designed to be
-     * overridden by LinkedHashMap, but not by any other subclass.
-     * Nearly all other internal methods are also package-protected
-     * but are declared final, so can be used by LinkedHashMap, view
-     * classes, and HashSet.
+    /***
+     * 下面的 package(default)修饰的方法是专门为LinkedHashMap设计的。其他子类不会使用。
+     *
+     * LinkedHashMap继承HashMap
+     *
      */
-
     // 创建一个链表结点
     Node<K, V> newNode(int hash, K key, V value, Node<K, V> next) {
         return new Node<>(hash, key, value, next);
@@ -1758,7 +1772,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return new Node<>(p.hash, p.key, p.value, next);
     }
 
-    // 创建一个红黑树节点
+    // 创建一个红黑树节点,LinkedHashMap
     TreeNode<K, V> newTreeNode(int hash, K key, V value, Node<K, V> next) {
         return new TreeNode<>(hash, key, value, next);
     }
@@ -1769,7 +1783,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Reset to initial default state.  Called by clone and readObject.
+     * 重新设置初始化状态，clone和readObject方法调用
      */
     void reinitialize() {
         table = null;
@@ -1781,13 +1795,13 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         size = 0;
     }
 
-    // Callbacks to allow LinkedHashMap post-actions
+    //为了实现LinkedHashMap的有序性
     void afterNodeAccess(Node<K, V> p) {
     }
-
+    //为了实现LinkedHashMap的有序性
     void afterNodeInsertion(boolean evict) {
     }
-
+    //为了实现LinkedHashMap的有序性
     void afterNodeRemoval(Node<K, V> p) {
     }
 
