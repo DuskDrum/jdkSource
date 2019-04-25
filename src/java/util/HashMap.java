@@ -1800,32 +1800,33 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         }
     }
 
-    /* ------------------------------------------------------------ */
-    // LinkedHashMap support
 
-
-    /***
-     * 下面的 package(default)修饰的方法是专门为LinkedHashMap设计的。其他子类不会使用。
-     *
-     * LinkedHashMap继承HashMap
-     *
-     */
-    // 创建一个链表结点
+    /**
+     *  创建一个链表结点
+      */
     Node<K, V> newNode(int hash, K key, V value, Node<K, V> next) {
         return new Node<>(hash, key, value, next);
     }
 
-    // 替换一个链表节点
+
+    /**
+     * 替换一个链表节点
+     */
     Node<K, V> replacementNode(Node<K, V> p, Node<K, V> next) {
         return new Node<>(p.hash, p.key, p.value, next);
     }
 
-    // 创建一个红黑树节点,LinkedHashMap
+
+    /**
+     * 创建一个红黑树节点
+     */
     TreeNode<K, V> newTreeNode(int hash, K key, V value, Node<K, V> next) {
         return new TreeNode<>(hash, key, value, next);
     }
 
-    // 替换一个红黑树节点
+    /**
+     * 替换一个红黑树节点
+     */
     TreeNode<K, V> replacementTreeNode(Node<K, V> p, Node<K, V> next) {
         return new TreeNode<>(p.hash, p.key, p.value, next);
     }
@@ -1881,7 +1882,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * 每个红色节点必须有两个黑色的子节点。(从每个叶子到根的所有路径上不能有两个连续的红色节点。)
      * 从任一节点到其每个叶子的所有简单路径都包含相同数目的黑色节点（黑高）。
      *
-     * 集成LinkedHashMap.Entry<K,V>,而LinkedHashMap.Entry继承了HashMap.Node<K,V>
+     * 继承LinkedHashMap.Entry<K,V>（具有组成链表的能力）,而LinkedHashMap.Entry继承了HashMap.Node<K,V>
      * 所以TreeNode依然保有Node的属性，同时由于添加了prev这个前驱指针使得树结构变为了双向的(有next，也有prev)。
      *
      *
