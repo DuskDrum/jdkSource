@@ -4,7 +4,7 @@
     * [ ] ArrayList
     * [x] HashMap
     * [ ] LinkedList
-    * [ ] LinkedHashMap
+    * [x] LinkedHashMap
     * [ ] LinkedHashSet
     * [ ] HashTable
     * [ ] TreeMap

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>java.util.TreeMap</OriginalElement>
+  <nodes>
+    <node x="0.0" y="183.0">java.lang.Cloneable</node>
+    <node x="400.5" y="80.0">java.util.AbstractMap</node>
+    <node x="97.5" y="263.0">java.util.TreeMap</node>
+    <node x="362.71875" y="0.0">java.util.Map</node>
+    <node x="258.0" y="183.0">java.util.NavigableMap</node>
+    <node x="268.5" y="91.5">java.util.SortedMap</node>
+    <node x="125.0" y="183.0">java.io.Serializable</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.util.TreeMap" target="java.io.Serializable">
+      <point x="-38.875" y="-61.0" />
+      <point x="214.125" y="238.0" />
+      <point x="181.5" y="238.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.NavigableMap" target="java.util.SortedMap">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.AbstractMap" target="java.util.Map">
+      <point x="0.0" y="-26.5" />
+      <point x="478.0" y="55.0" />
+      <point x="418.21875" y="55.0" />
+      <point x="18.5" y="15.0" />
+    </edge>
+    <edge source="java.util.TreeMap" target="java.util.NavigableMap">
+      <point x="38.875" y="-61.0" />
+      <point x="291.875" y="238.0" />
+      <point x="324.5" y="238.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.SortedMap" target="java.util.Map">
+      <point x="0.0" y="-15.0" />
+      <point x="324.5" y="55.0" />
+      <point x="381.21875" y="55.0" />
+      <point x="-18.5" y="15.0" />
+    </edge>
+    <edge source="java.util.TreeMap" target="java.lang.Cloneable">
+      <point x="-116.625" y="-61.0" />
+      <point x="136.375" y="238.0" />
+      <point x="52.5" y="238.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.TreeMap" target="java.util.AbstractMap">
+      <point x="116.625" y="-61.0" />
+      <point x="369.625" y="238.0" />
+      <point x="478.0" y="238.0" />
+      <point x="0.0" y="26.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="226.5" y="135.0" />
+  <SelectedNodes>
+    <node>java.util.TreeMap</node>
+    <node>java.io.Serializable</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
