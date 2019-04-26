@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>java.util.TreeSet</OriginalElement>
+  <nodes>
+    <node x="133.0" y="320.0">java.lang.Cloneable</node>
+    <node x="400.5" y="160.0">java.util.AbstractCollection</node>
+    <node x="268.0" y="240.0">java.util.SortedSet</node>
+    <node x="354.5" y="80.0">java.util.Collection</node>
+    <node x="392.0" y="240.0">java.util.AbstractSet</node>
+    <node x="303.5" y="160.0">java.util.Set</node>
+    <node x="258.0" y="320.0">java.util.NavigableSet</node>
+    <node x="361.0" y="0.0">java.lang.Iterable</node>
+    <node x="207.75" y="400.0">java.util.TreeSet</node>
+    <node x="0.0" y="320.0">java.io.Serializable</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.util.TreeSet" target="java.lang.Cloneable">
+      <point x="-11.25" y="-15.0" />
+      <point x="241.5" y="370.0" />
+      <point x="185.5" y="370.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.Set" target="java.util.Collection">
+      <point x="0.0" y="-15.0" />
+      <point x="336.5" y="135.0" />
+      <point x="380.75" y="135.0" />
+      <point x="-26.25" y="15.0" />
+    </edge>
+    <edge source="java.util.TreeSet" target="java.io.Serializable">
+      <point x="-33.75" y="-15.0" />
+      <point x="219.0" y="380.0" />
+      <point x="56.5" y="380.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.Collection" target="java.lang.Iterable">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.TreeSet" target="java.util.NavigableSet">
+      <point x="11.25" y="-15.0" />
+      <point x="264.0" y="370.0" />
+      <point x="320.0" y="370.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.TreeSet" target="java.util.AbstractSet">
+      <point x="33.75" y="-15.0" />
+      <point x="286.5" y="380.0" />
+      <point x="449.0" y="380.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.AbstractSet" target="java.util.Set">
+      <point x="-28.5" y="-15.0" />
+      <point x="420.5" y="215.0" />
+      <point x="353.0" y="215.0" />
+      <point x="16.5" y="15.0" />
+    </edge>
+    <edge source="java.util.SortedSet" target="java.util.Set">
+      <point x="0.0" y="-15.0" />
+      <point x="-16.5" y="15.0" />
+    </edge>
+    <edge source="java.util.NavigableSet" target="java.util.SortedSet">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="java.util.AbstractCollection" target="java.util.Collection">
+      <point x="0.0" y="-15.0" />
+      <point x="477.5" y="135.0" />
+      <point x="433.25" y="135.0" />
+      <point x="26.25" y="15.0" />
+    </edge>
+    <edge source="java.util.AbstractSet" target="java.util.AbstractCollection">
+      <point x="28.5" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7244444444444444" x="277.5" y="245.0" />
+  <SelectedNodes>
+    <node>java.util.TreeSet</node>
+    <node>java.io.Serializable</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

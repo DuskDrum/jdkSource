@@ -8,6 +8,9 @@
     * [ ] LinkedHashSet
     * [ ] HashTable
     * [ ] TreeMap
+    * [ ] TreeSet
+    * [x] NavigableMap
+    * [x] NavigableSet
     * [ ] ConcurrentHashMap
     * [ ] ConcurrentLinkedQueue
 * 多线程

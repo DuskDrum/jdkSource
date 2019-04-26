@@ -35,7 +35,7 @@ public class HashMapTest extends HashMap{
         // 循环8次扩容
         IntStream.range(0,8).forEach(i->{
             System.out.println("这是第.."+i);
-            ((HashMap<String, String>) param).resize(); //打破双亲委派的封印才能正常运行(挪到java.util包下面)
+//            ((HashMap<String, String>) param).resize(); //打破双亲委派的封印才能正常运行(挪到java.util包下面)
         });
         param.get("1");
 
