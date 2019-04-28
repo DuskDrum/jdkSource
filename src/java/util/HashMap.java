@@ -40,9 +40,11 @@ import java.util.function.Function;
  *
  * 但是只能用来检测错误，因为JDK并不保证fail-fast机制一定会发生。
  *
- * HashMap采用数组+链表+红黑树实现，当链表长度超过阈值8时，将链表转换为红黑树 *
+ * HashMap采用数组+链表+红黑树实现，当链表长度超过阈值8时，将链表转换为红黑树
  *
  * 当链表转化为树，或者树转化为链表的时候，会保证桶中元素的顺序(Node.next)
+ *
+ * TODO(已解决)：HashMp中的很多变量使用transient来修饰（不参与序列化），这样设计有什么用呢？考虑不同虚拟机的HashCode方法不同，详见https://segmentfault.com/q/1010000000630486
  *
  */
 public class HashMap<K, V> extends AbstractMap<K, V>
@@ -214,7 +216,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * 哈希桶数组，分配的时候，table的长度总是2的幂，就是桶数组
+     * 哈希桶数组，分配的时候，table的长度总是2的幂，就是桶数组。
      */
     transient Node<K, V>[] table;
 
@@ -327,7 +329,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * 2.根据key的hash值找到对应的桶(也就是数组)
      * 3.根据key的equals方法遍历得到hashmap中具体的值，这里注意，equals方法是可以重写的
      *
-     * @see #put(Object, Object)
+     * TODO(以解决):这里有个问题，已经定义了泛型，为什么不直接get(K key)。因为泛型的话还需要考虑k继承的类，即<? extends K>,编译器会出错，详情见 https://blog.csdn.net/hengyunabc/article/details/7696432
      */
     public V get(Object key) {
         Node<K, V> e;
