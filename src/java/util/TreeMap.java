@@ -213,10 +213,9 @@ public class TreeMap<K,V>
     }
 
     /**
-     * Gets the entry corresponding to the specified key; if no such entry
-     * exists, returns the entry for the least key greater than the specified
-     * key; if no such entry exists (i.e., the greatest key in the Tree is less
-     * than the specified key), returns {@code null}.
+     * 获取与指定键对应的条目;
+     * 如果不存在此类条目，则返回大于指定键的最小键的条目;
+     * 如果不存在这样的条目（即，树中的最大密钥小于指定的密钥），则返回{@code null}。
      */
     final Entry<K,V> getCeilingEntry(K key) {
         Entry<K,V> p = root;
