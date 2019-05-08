@@ -3,13 +3,13 @@ package java.util;
 import java.util.function.Consumer;
 
 /**
- * LinkedList是List和Deque接口的双向链表的实现。实现了所有可选List操作，并允许包括null值。
- * LinkedList既然是通过双向链表去实现的，那么它可以被当作堆栈、队列或双端队列进行操作。并且其顺序访问非常高效，而随机访问效率比较低。
- * 内部方法，注释会描述为节点的操作(如删除第一个节点)，公开的方法会描述为元素的操作(如删除第一个元素)
- * 注意，此实现不是同步的。 如果多个线程同时访问一个LinkedList实例，而其中至少一个线程从结构上修改了列表，那么它必须保持外部同步。
- * LinkedList不是线程安全的，如果在多线程中使用（修改），需要在外部作同步处理。
- * 这通常是通过同步那些用来封装列表的对象来实现的。
- * 但如果没有这样的对象存在，则该列表需要运用{@link Collections#synchronizedList Collections.synchronizedList}来进行“包装”，该方法最好是在创建列表对象时完成，为了避免对列表进行突发的非同步操作。
+ * LinkedList实现Deque接口(双端队列)所以，基于双端队列的操作在LinkedList中全部有效。
+ * (链表是将要储存的数据存在存储单元里，这个单元还存放了下一个存储单元的地址)
+ * (那么双向链表就是说，list每个元素储存自身以外，还额外存储前一个和后一个单元的地址，可以方便获取其前后元素)
+ * 元素(或者叫储存单元)在LinkedList里就是{@link Node}
+ *
+ * 无序
+ * 线程非安全
  */
 
 public class LinkedList<E>
@@ -18,31 +18,26 @@ public class LinkedList<E>
 
 
     /**
-     * 元素数量
+     * 元素个数
      */
     transient int size = 0;
 
     /**
-     * 首结点引用
+     * 第一个元素
      */
     transient Node<E> first;
 
     /**
-     * 尾节点引用
+     * 最后一个元素
      */
     transient Node<E> last;
 
-    /**
-     * 无参构造方法
-     */
+
     public LinkedList() {
     }
 
     /**
      * 通过一个集合初始化LinkedList，元素顺序有这个集合的迭代器返回顺序决定
-     *
-     * @param c 其元素将被放入此列表中的集合
-     * @throws NullPointerException 如果指定的集合是空的
      */
     public LinkedList(Collection<? extends E> c) {
         // 调用无参构造函数
@@ -962,19 +957,17 @@ public class LinkedList<E>
     }
 
     /**
-     * 节点的数据结构，包含前后节点的引用和当前节点
-     *
-     * @param <E>
+     * 存储单元：包括当前节点存储的数据，前后节点的引用
+     * 比较简单
      */
     private static class Node<E> {
-        // 存储的元素
+        // 存储元素
         E item;
-        // 后继结点
+        // 指向后继结点
         Node<E> next;
-        // 前驱结点
+        // 指向前驱结点
         Node<E> prev;
 
-        // 前驱结点、存储的元素和后继结点作为参数的构造方法
         Node(Node<E> prev, E element, Node<E> next) {
             this.item = element;
             this.next = next;
